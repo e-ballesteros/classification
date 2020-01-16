@@ -5,6 +5,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 import numpy as np
 from bayes_classifier import bayes_classifier
+from naive_bayes_classifier import naive_bayes_classifier
 
 
 # Returns the rate of equal values in two class vectors
@@ -49,11 +50,15 @@ for i in range(0, len(y_test)):
 
 print('class_vector_train: ', class_vector_train)
 
-class_label_vector = bayes_classifier(X_train, class_vector_train, X_test)
-accuracy_Bayes = compare_class_vectors(class_label_vector, class_vector_test)
+class_label_vector_bayes = bayes_classifier(X_train, class_vector_train, X_test)
+class_label_vector_naive = naive_bayes_classifier(X_train, class_vector_train, X_test)
+
+accuracy_Bayes = compare_class_vectors(class_label_vector_bayes, class_vector_test)
+accuracy_Naive_Bayes = compare_class_vectors(class_label_vector_naive, class_vector_test)
 
 print('class_vector_test: ', class_vector_test)
-print('class_label_vector Bayes: ', class_label_vector)
+print('class_label_vector Bayes: ', class_label_vector_bayes)
+print('class_label_vector Naive Bayes: ', class_label_vector_naive)
 
 print('Accuracy of Bayes is: ', accuracy_Bayes)
 
