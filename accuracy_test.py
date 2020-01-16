@@ -61,4 +61,5 @@ print('class_label_vector Bayes: ', class_label_vector_bayes)
 print('class_label_vector Naive Bayes: ', class_label_vector_naive)
 
 print('Accuracy of Bayes is: ', accuracy_Bayes)
+print('Accuracy of Naive Bayes is: ', accuracy_Naive_Bayes)
 

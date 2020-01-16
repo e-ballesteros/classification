@@ -27,6 +27,9 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
     # List with the class vector that is returned as result
     class_label_vector = []
 
+    # x plot of each feature
+    x_plot = []
+
     # Split the dataset into subdatasets according to the classes
     group_subdatasets = split_into_classes(data_training, class_vector)
 
@@ -43,8 +46,8 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
             optimal_bandwidth = 1.06 * feature_std * np.power(rows_data_training, -1 / 5)
 
             kde_object = KernelDensity(kernel=kernel_function, bandwidth=optimal_bandwidth).fit(group_subdatasets[i][:, j].reshape(-1, 1))
-            x_plot = np.linspace(feature_min - margin, feature_max + margin, n_samples)[:, np.newaxis]
-            kde_logdensity_estimate = kde_object.score_samples(x_plot)
+            x_plot.append(np.linspace(feature_min - margin, feature_max + margin, n_samples)[:, np.newaxis])
+            kde_logdensity_estimate = kde_object.score_samples(x_plot[j])
 
             # Append the kde_estimate of each feature of a certain class
             kde_estimate.append(np.exp(kde_logdensity_estimate))
@@ -53,10 +56,10 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
 
         # Find the indexes of the 4 features that are most similar to the instance
         for k in range(0, rows_data_test):
-            index_0 = find_closest_value(x_plot, data_test[k][0])
-            index_1 = find_closest_value(x_plot, data_test[k][1])
-            index_2 = find_closest_value(x_plot, data_test[k][2])
-            index_3 = find_closest_value(x_plot, data_test[k][3])
+            index_0 = find_closest_value(x_plot[0], data_test[k][0])
+            index_1 = find_closest_value(x_plot[1], data_test[k][1])
+            index_2 = find_closest_value(x_plot[2], data_test[k][2])
+            index_3 = find_closest_value(x_plot[3], data_test[k][3])
 
             individual_mult_likelihoods.append(kde_estimate[0][index_0] *
                                                kde_estimate[1][index_1] *
@@ -65,6 +68,7 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
 
         group_mult_likelihoods.append(individual_mult_likelihoods)         # Stores in group the class mult_likelihood vector
         individual_mult_likelihoods = []
+        x_plot = []
 
     results = []
 
