@@ -11,7 +11,7 @@ from bayes_classifier import bayes_classifier
 def compare_class_vectors(class_vector_a, class_vector_b):
     matches = 0
     for i in range(0, len(class_vector_a)):
-        if class_vector_a == class_vector_b:
+        if class_vector_a[i] == class_vector_b[i]:
             matches += 1
     return matches/len(class_vector_a)
 
@@ -52,7 +52,8 @@ print('class_vector_train: ', class_vector_train)
 class_label_vector = bayes_classifier(X_train, class_vector_train, X_test)
 accuracy_Bayes = compare_class_vectors(class_label_vector, class_vector_test)
 
-print('class_label_vector: ', class_label_vector)
+print('class_vector_test: ', class_vector_test)
+print('class_label_vector Bayes: ', class_label_vector)
 
 print('Accuracy of Bayes is: ', accuracy_Bayes)
 

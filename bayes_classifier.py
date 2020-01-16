@@ -43,7 +43,8 @@ def bayes_classifier(data_training, class_vector, data_test):
     # List of the kde_estimate of each subdataset corresponding to each class
     kde_estimate = []
 
-    class_list, class_pmf = estimate_pmf(class_vector)
+    # Estimation of pmf of class_vector in class_pmf and storage of classes list in unique_class_list
+    unique_class_list, class_pmf = estimate_pmf(class_vector)
 
     # List with the four possible likelihoods lists for each class
     group_likelihoods = []
@@ -67,11 +68,6 @@ def bayes_classifier(data_training, class_vector, data_test):
         feature_1_min, feature_1_max, feature_1_std, feature_1_mean = features_characteristics(group_subdatasets[i][:, 1])
         feature_2_min, feature_2_max, feature_2_std, feature_2_mean = features_characteristics(group_subdatasets[i][:, 2])
         feature_3_min, feature_3_max, feature_3_std, feature_3_mean = features_characteristics(group_subdatasets[i][:, 3])
-
-        print("Feature 0 mean=", feature_0_mean)
-        print("Feature 1 mean=", feature_1_mean)
-        print("Feature 2 mean=", feature_2_mean)
-        print("Feature 3 mean=", feature_3_mean)
 
         start_sample_0, stop_sample_0 = start_and_stop(feature_0_mean, feature_0_std)
         start_sample_1, stop_sample_1 = start_and_stop(feature_1_mean, feature_1_std)
@@ -102,21 +98,26 @@ def bayes_classifier(data_training, class_vector, data_test):
 
         rows_data_test, columns_data_test = data_test.shape
 
+        ############################################### THIS IS WRONG ############################################
         # Find the indexes of the 4 features most similar to the data_test row (instance)
         for j in range(0, rows_data_test):
-            index_0 = find_closest_value(plot_0, data_test[i][0])
-            index_1 = find_closest_value(plot_1, data_test[i][1])
-            index_2 = find_closest_value(plot_2, data_test[i][2])
-            index_3 = find_closest_value(plot_3, data_test[i][3])
+            index_0 = find_closest_value(plot_0, data_test[j][0])
+            index_1 = find_closest_value(plot_1, data_test[j][1])
+            index_2 = find_closest_value(plot_2, data_test[j][2])
+            index_3 = find_closest_value(plot_3, data_test[j][3])
             index_0123 = int(str(index_0) + str(index_1) + str(index_2) + str(index_3))
-            individual_likelihood.append(kde_estimate[index_0123])
+            individual_likelihood.append(kde_estimate[i][index_0123])
+        ############################################### THIS IS WRONG ############################################
 
         group_likelihoods.append(individual_likelihood)             # Stores in group the class likelihood vector
+        individual_likelihood = []
 
-    for i in range(0, len(class_vector)):
-        class_label_vector.append(np.argmax(group_likelihoods[0][i]*class_pmf[0],
-                                            group_likelihoods[1][i]*class_pmf[1],
-                                            group_likelihoods[2][i]*class_pmf[2],
-                                            group_likelihoods[3][i]*class_pmf[3]))
+    results = []
+
+    for i in range(0, rows_data_test):
+        for j in range(0, len(unique_class_list)):
+            results.append(group_likelihoods[j][i]*class_pmf[j])    # Multiplication of likelihoods and probabilities
+        class_label_vector.append(np.argmax(results))
+        results = []
 
     return class_label_vector
