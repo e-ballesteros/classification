@@ -31,11 +31,28 @@ def split_into_classes(data_matrix, class_vector):
     return group_datasets
 
 
+# Returns the index of the element of the array most similar to the number
+def find_closest_value(array, number):
+    return (np.abs(array - number)).argmin()
+
+
 def bayes_classifier(data_training, class_vector, data_test):
     from estimation_pmf import estimate_pmf
     from sklearn.neighbors import KernelDensity
 
+    # List of the kde_estimate of each subdataset corresponding to each class
+    kde_estimate = []
+
     class_list, class_pmf = estimate_pmf(class_vector)
+
+    # List with the four possible likelihoods lists for each class
+    group_likelihoods = []
+
+    # List with an individual likelihood
+    individual_likelihood = []
+
+    # List with the class vector that is returned as result
+    class_label_vector = []
 
     # Split the dataset into subdatasets according to the classes
     group_subdatasets = split_into_classes(data_training, class_vector)
@@ -44,8 +61,6 @@ def bayes_classifier(data_training, class_vector, data_test):
     kernel_function = input('Introduce Kernel function you want to use (gaussian, tophat, epanechnikov,'
                             'exponential, linear or cosine): ')
     bandwidth_kde = float(input('Introduce bandwidth : '))
-
-    print(group_subdatasets[0][:, 0])
 
     for i in range(0, len(group_subdatasets)):
         feature_0_min, feature_0_max, feature_0_std, feature_0_mean = features_characteristics(group_subdatasets[i][:, 0])
@@ -83,14 +98,25 @@ def bayes_classifier(data_training, class_vector, data_test):
         kde_object = KernelDensity(kernel=kernel_function, bandwidth=bandwidth_kde).fit(data_training)
 
         kde_log_density_estimate = kde_object.score_samples(data_plot)
-        kde_estimate = np.exp(kde_log_density_estimate)
-        print("KDE estimate =", kde_estimate)
+        kde_estimate.append(np.exp(kde_log_density_estimate))
 
-        rows_subdataset, columns_subdataset = group_subdatasets[i].shape
+        rows_data_test, columns_data_test = data_test.shape
 
-        # Compute of likelihood probability of each row
-        #for i in range(0, rows_subdataset):
-            #group_subdatasets[i]
+        # Find the indexes of the 4 features most similar to the data_test row (instance)
+        for j in range(0, rows_data_test):
+            index_0 = find_closest_value(plot_0, data_test[i][0])
+            index_1 = find_closest_value(plot_1, data_test[i][1])
+            index_2 = find_closest_value(plot_2, data_test[i][2])
+            index_3 = find_closest_value(plot_3, data_test[i][3])
+            index_0123 = int(str(index_0) + str(index_1) + str(index_2) + str(index_3))
+            individual_likelihood.append(kde_estimate[index_0123])
 
-# https://stackoverflow.com/questions/30696741/how-to-implement-kernel-density-estimation-in-multivariate-3d
-   # *class_list[np.argmax(class_pmf)]
+        group_likelihoods.append(individual_likelihood)             # Stores in group the class likelihood vector
+
+    for i in range(0, len(class_vector)):
+        class_label_vector.append(np.argmax(group_likelihoods[0][i]*class_pmf[0],
+                                            group_likelihoods[1][i]*class_pmf[1],
+                                            group_likelihoods[2][i]*class_pmf[2],
+                                            group_likelihoods[3][i]*class_pmf[3]))
+
+    return class_label_vector
