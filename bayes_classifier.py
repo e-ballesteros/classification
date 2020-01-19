@@ -7,6 +7,8 @@ from classifier_functions import find_closest_vector
 from classifier_functions import split_into_classes
 
 
+# Bayes classifier function that takes a training data set, a class label vector for train dataset and a test dataset
+# and returns a class label vector for the test dataset
 def bayes_classifier(data_training, class_vector, data_test):
     from estimation_pmf import estimate_pmf
     from sklearn.neighbors import KernelDensity
@@ -20,7 +22,7 @@ def bayes_classifier(data_training, class_vector, data_test):
     # List with the four possible likelihoods lists for each class
     group_likelihoods = []
 
-    # List with an individual likelihood
+    # List with an individual likelihood of a certain class
     individual_likelihood = []
 
     # List with the class vector that is returned as result
@@ -34,6 +36,7 @@ def bayes_classifier(data_training, class_vector, data_test):
                             '(gaussian, tophat, epanechnikov,exponential, linear or cosine): ')
     bandwidth_kde = float(input('Introduce bandwidth (Bayes classifier): '))
 
+    # Done for every subdataset of each class
     for i in range(0, len(group_subdatasets)):
         feature_0_min, feature_0_max, feature_0_std, feature_0_mean = features_characteristics(group_subdatasets[i][:, 0])
         feature_1_min, feature_1_max, feature_1_std, feature_1_mean = features_characteristics(group_subdatasets[i][:, 1])
@@ -50,13 +53,15 @@ def bayes_classifier(data_training, class_vector, data_test):
         plot_2 = np.linspace(start_sample_2, stop_sample_2, n_samples, endpoint=True)  # row vector
         plot_3 = np.linspace(start_sample_3, stop_sample_3, n_samples, endpoint=True)  # row vector
 
-        data_plot_0, data_plot_1, data_plot_2, data_plot_3 = np.meshgrid(plot_0, plot_1, plot_2, plot_3)  # Transform vectors to matrices through repetition
+        # Transform vectors to matrices through repetition
+        data_plot_0, data_plot_1, data_plot_2, data_plot_3 = np.meshgrid(plot_0, plot_1, plot_2, plot_3)
 
         data_plot_0_vectorized = data_plot_0.flatten()  # Vectorize the grid matrix data_plot_0
         data_plot_1_vectorized = data_plot_1.flatten()  # Vectorize the grid matrix data_plot_1
         data_plot_2_vectorized = data_plot_2.flatten()  # Vectorize the grid matrix data_plot_2
         data_plot_3_vectorized = data_plot_3.flatten()  # Vectorize the grid matrix data_plot_3
 
+        # Form the data plot matrix composed by samples organized by rows and features organized by columns
         data_plot = np.transpose(np.vstack((data_plot_0_vectorized,
                                             data_plot_1_vectorized,
                                             data_plot_2_vectorized,
@@ -69,22 +74,22 @@ def bayes_classifier(data_training, class_vector, data_test):
 
         rows_data_test, columns_data_test = data_test.shape
 
-        ############################################### THIS IS WRONG ############################################
         # Find the indexes of the 4 features most similar to the data_test row (instance)
         for j in range(0, rows_data_test):
             index_kde = find_closest_vector(data_plot, data_test[j])
             individual_likelihood.append(kde_estimate[i][index_kde])
-        ############################################### THIS IS WRONG ############################################
 
         group_likelihoods.append(individual_likelihood)             # Stores in group the class likelihood vector
         individual_likelihood = []
 
-    results = []
+    results = []                                                    # Results for each possible class for a certain row
 
+    # For each row of the data_test corresponding to each sample of it
     for i in range(0, rows_data_test):
+        # For each class of the dataset
         for j in range(0, len(unique_class_list)):
             results.append(group_likelihoods[j][i]*class_pmf[j])    # Multiplication of likelihoods and probabilities
-        class_label_vector.append(np.argmax(results))
+        class_label_vector.append(np.argmax(results))               # The maximum of the results is the one needed
         results = []
 
     return class_label_vector

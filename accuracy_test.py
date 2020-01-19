@@ -30,7 +30,6 @@ test_size = float(input('Introduce proportion of the dataset to be included in t
 
 # List with the numbers of the rows of the dataset
 y = np.linspace(0, 149, 150, endpoint=True)
-print('y: ', y)
 
 # X_train and X_test are the matrices splitted and y_train and y_test are the rows selected in each case
 X_train, X_test, y_train, y_test = train_test_split(data_matrix, y, test_size=test_size)
@@ -49,10 +48,14 @@ for i in range(0, len(y_test)):
     class_vector_test.append(class_vector[int(y_test[i])])
 
 print('class_vector_train: ', class_vector_train)
+print('class_vector_test: ', class_vector_test)
 
+# Bayes classifier
 class_label_vector_bayes = bayes_classifier(X_train, class_vector_train, X_test)
+# Naive Bayes classifier
 class_label_vector_naive = naive_bayes_classifier(X_train, class_vector_train, X_test)
 
+# Computation of accuracies of each method
 accuracy_Bayes = compare_class_vectors(class_label_vector_bayes, class_vector_test)
 accuracy_Naive_Bayes = compare_class_vectors(class_label_vector_naive, class_vector_test)
 

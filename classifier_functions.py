@@ -4,10 +4,12 @@ import numpy as np
 from scipy import spatial                            # Needed to perform a search of the closest vector within a matrix
 
 
+# Minimum, maximum, std and mean of a certain feature
 def features_characteristics(feature_vector):
     return feature_vector.min(), feature_vector.max(), feature_vector.std(), feature_vector.mean()
 
 
+# Start sample and stop sample for the plot
 def start_and_stop(feature_mean, feature_std):
     return feature_mean - 2 * feature_std, feature_mean + 2 * feature_std
 
@@ -16,8 +18,6 @@ def start_and_stop(feature_mean, feature_std):
 def split_into_classes(data_matrix, class_vector):
 
     unique_class_list = np.unique(class_vector, return_counts=False)   # Returns unique elements in class_vector
-
-    rows, columns = data_matrix.shape
 
     group_datasets = []                      # List in which the different subdatasets of classes will be allocated
     individual_dataset = []                  # List in which a certain dataset is stored

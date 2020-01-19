@@ -7,6 +7,8 @@ from classifier_functions import find_closest_value
 from classifier_functions import split_into_classes
 
 
+# Naive Bayes classifier function that takes a training data set, a class label vector for train dataset and a test
+# dataset and returns a class label vector for the test dataset
 def naive_bayes_classifier(data_training, class_vector, data_test):
 
     from estimation_pmf import estimate_pmf
@@ -39,13 +41,15 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
 
     rows_data_training, columns_data_training = data_training.shape
 
+    # Done for every subdataset of each class
     for i in range(0, len(group_subdatasets)):
         for j in range(0, columns_data_training):
             feature_min, feature_max, feature_std, feature_mean = features_characteristics(group_subdatasets[i][:, j])
             margin = feature_std * 2
             optimal_bandwidth = 1.06 * feature_std * np.power(rows_data_training, -1 / 5)
 
-            kde_object = KernelDensity(kernel=kernel_function, bandwidth=optimal_bandwidth).fit(group_subdatasets[i][:, j].reshape(-1, 1))
+            kde_object = KernelDensity(kernel=kernel_function,
+                                       bandwidth=optimal_bandwidth).fit(group_subdatasets[i][:, j].reshape(-1, 1))
             x_plot.append(np.linspace(feature_min - margin, feature_max + margin, n_samples)[:, np.newaxis])
             kde_logdensity_estimate = kde_object.score_samples(x_plot[j])
 
@@ -66,15 +70,17 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
                                                kde_estimate[2][index_2] *
                                                kde_estimate[3][index_3])
 
-        group_mult_likelihoods.append(individual_mult_likelihoods)         # Stores in group the class mult_likelihood vector
+        group_mult_likelihoods.append(individual_mult_likelihoods)    # Stores in group the class mult_likelihood vector
         individual_mult_likelihoods = []
         x_plot = []
 
     results = []
 
+    # For each row of the data_test corresponding to each sample of it
     for i in range(0, rows_data_test):
+        # For each class of the dataset
         for j in range(0, len(unique_class_list)):
-            results.append(group_mult_likelihoods[j][i]*class_pmf[j])    # Multiplication of likelihoods and probabilities
+            results.append(group_mult_likelihoods[j][i]*class_pmf[j])  # Multiplication of likelihoods and probabilities
         class_label_vector.append(np.argmax(results))
         results = []
 
