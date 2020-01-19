@@ -16,8 +16,8 @@ def compare_class_vectors(class_vector_a, class_vector_b):
             matches += 1
     return matches/len(class_vector_a)
 
-# Bayes_classifier can be used with every dataset. In this file it is tested with the iris dataset
 
+# Bayes_classifier can be used with every dataset. In this file it is tested with the iris dataset
 iris = datasets.load_iris()
 data_matrix, class_vector = iris.data, iris.target
 

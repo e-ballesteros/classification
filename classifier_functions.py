@@ -23,11 +23,11 @@ def split_into_classes(data_matrix, class_vector):
     individual_dataset = []                  # List in which a certain dataset is stored
 
     for i in range(0, len(unique_class_list)):                  # It is splitted into len(classes_list) number of matrix
-        #individual_dataset = np.empty([][columns])
         for j in range(0, len(class_vector)):                   # All the elements within class_vector
             if class_vector[j] == unique_class_list[i]:         # Class_vector element compared with a certain class
                 individual_dataset.append(data_matrix[j])
         group_datasets.append(np.array(individual_dataset))     # Append the subdataset as numpy array
+        individual_dataset = []
 
     return group_datasets
 
