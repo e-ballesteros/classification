@@ -33,9 +33,9 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
     # Split the dataset into subdatasets according to the classes
     group_subdatasets = split_into_classes(data_training, class_vector)
 
-    n_samples = int(input('Introduce number of samples: '))
-    kernel_function = input('Introduce Kernel function you want to use (gaussian, tophat, epanechnikov,'
-                            'exponential, linear or cosine): ')
+    n_samples = int(input('Introduce number of samples (Naive Bayes classifier): '))
+    kernel_function = input('Introduce Kernel function you want to use (Naive Bayes classifier) '
+                            '(gaussian, tophat, epanechnikov, exponential, linear or cosine): ')
 
     rows_data_training, columns_data_training = data_training.shape
 

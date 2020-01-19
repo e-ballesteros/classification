@@ -3,7 +3,7 @@
 import numpy as np
 from classifier_functions import features_characteristics
 from classifier_functions import start_and_stop
-from classifier_functions import find_closest_value
+from classifier_functions import find_closest_vector
 from classifier_functions import split_into_classes
 
 
@@ -29,10 +29,10 @@ def bayes_classifier(data_training, class_vector, data_test):
     # Split the dataset into subdatasets according to the classes
     group_subdatasets = split_into_classes(data_training, class_vector)
 
-    n_samples = int(input('Introduce number of samples: '))
-    kernel_function = input('Introduce Kernel function you want to use (gaussian, tophat, epanechnikov,'
-                            'exponential, linear or cosine): ')
-    bandwidth_kde = float(input('Introduce bandwidth : '))
+    n_samples = int(input('Introduce number of samples (Bayes Classifier): '))
+    kernel_function = input('Introduce Kernel function (Bayes Classifier) you want to use '
+                            '(gaussian, tophat, epanechnikov,exponential, linear or cosine): ')
+    bandwidth_kde = float(input('Introduce bandwidth (Bayes classifier): '))
 
     for i in range(0, len(group_subdatasets)):
         feature_0_min, feature_0_max, feature_0_std, feature_0_mean = features_characteristics(group_subdatasets[i][:, 0])
@@ -72,12 +72,8 @@ def bayes_classifier(data_training, class_vector, data_test):
         ############################################### THIS IS WRONG ############################################
         # Find the indexes of the 4 features most similar to the data_test row (instance)
         for j in range(0, rows_data_test):
-            index_0 = find_closest_value(plot_0, data_test[j][0])
-            index_1 = find_closest_value(plot_1, data_test[j][1])
-            index_2 = find_closest_value(plot_2, data_test[j][2])
-            index_3 = find_closest_value(plot_3, data_test[j][3])
-            index_0123 = int(str(index_0) + str(index_1) + str(index_2) + str(index_3))
-            individual_likelihood.append(kde_estimate[i][index_0123])
+            index_kde = find_closest_vector(data_plot, data_test[j])
+            individual_likelihood.append(kde_estimate[i][index_kde])
         ############################################### THIS IS WRONG ############################################
 
         group_likelihoods.append(individual_likelihood)             # Stores in group the class likelihood vector

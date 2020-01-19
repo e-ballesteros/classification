@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
+from scipy import spatial                            # Needed to perform a search of the closest vector within a matrix
 
 
 def features_characteristics(feature_vector):
@@ -29,6 +30,13 @@ def split_into_classes(data_matrix, class_vector):
         group_datasets.append(np.array(individual_dataset))     # Append the subdataset as numpy array
 
     return group_datasets
+
+
+# Returns the index of the element of the array most similar to the number
+def find_closest_vector(matrix, array_a):
+    tree = spatial.KDTree(matrix)
+    distance, index = tree.query(array_a)
+    return index
 
 
 # Returns the index of the element of the array most similar to the number
