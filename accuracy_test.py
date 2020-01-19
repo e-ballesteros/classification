@@ -46,7 +46,7 @@ for i in range(0, len(y_train)):
 
 for i in range(0, len(y_test)):
     # y_test[i] is the index of the class_vector element we need to append
-    class_vector_test.append(class_vector[int(y_train[i])])
+    class_vector_test.append(class_vector[int(y_test[i])])
 
 print('class_vector_train: ', class_vector_train)
 
