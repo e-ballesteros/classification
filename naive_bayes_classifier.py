@@ -39,6 +39,11 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
     kernel_function = input('Introduce Kernel function you want to use (Naive Bayes classifier) '
                             '(gaussian, tophat, epanechnikov, exponential, linear or cosine): ')
 
+    user_optimal_bandwidth = input('Do you want to use optimal bandwidth (y/n) : ')
+
+    if user_optimal_bandwidth == 'n':
+        bandwidthKDE = float(input('Introduce bandwidth : '))
+
     rows_data_training, columns_data_training = data_training.shape
 
     # Done for every subdataset of each class
@@ -48,8 +53,11 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
             margin = feature_std * 2
             optimal_bandwidth = 1.06 * feature_std * np.power(rows_data_training, -1 / 5)
 
+            if user_optimal_bandwidth == 'y':
+                bandwidthKDE = optimal_bandwidth
+
             kde_object = KernelDensity(kernel=kernel_function,
-                                       bandwidth=optimal_bandwidth).fit(group_subdatasets[i][:, j].reshape(-1, 1))
+                                       bandwidth=bandwidthKDE).fit(group_subdatasets[i][:, j].reshape(-1, 1))
             x_plot.append(np.linspace(feature_min - margin, feature_max + margin, n_samples)[:, np.newaxis])
             kde_logdensity_estimate = kde_object.score_samples(x_plot[j])
 
