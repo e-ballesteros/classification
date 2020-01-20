@@ -50,6 +50,8 @@ for i in range(0, len(y_test)):
 print('class_vector_train: ', class_vector_train)
 print('class_vector_test: ', class_vector_test)
 
+print('Proportion of dataset selected to be included in test dataset: ', test_size)
+
 # Bayes classifier
 class_label_vector_bayes = bayes_classifier(X_train, class_vector_train, X_test)
 # Naive Bayes classifier

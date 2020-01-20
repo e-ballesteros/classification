@@ -39,10 +39,10 @@ def naive_bayes_classifier(data_training, class_vector, data_test):
     kernel_function = input('Introduce Kernel function you want to use (Naive Bayes classifier) '
                             '(gaussian, tophat, epanechnikov, exponential, linear or cosine): ')
 
-    user_optimal_bandwidth = input('Do you want to use optimal bandwidth (y/n) : ')
+    user_optimal_bandwidth = input('Do you want to use optimal bandwidth (Naive Bayes classifier) (y/n) : ')
 
     if user_optimal_bandwidth == 'n':
-        bandwidthKDE = float(input('Introduce bandwidth : '))
+        bandwidthKDE = float(input('Introduce bandwidth (Naive Bayes classifier): '))
 
     rows_data_training, columns_data_training = data_training.shape
 
